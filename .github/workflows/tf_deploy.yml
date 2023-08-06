@@ -13,19 +13,21 @@ jobs:
       TF_IN_AUTOMATION: true
       TF_INPUT: false
       TF_CLI_ARGS_apply: "-auto-approve -parallelism=30"
+      # Env vars for TF auth
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      # Var for PS cleanup
       MG_NAME: "jose"
     runs-on: ubuntu-latest
     steps:
-      - name: Azure Login
-        uses: azure/login@v1
-        if: ${{ failure() }} || ${{ success() }}
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-          enable-AzPSSession: true
+      # - name: Azure Login
+      #   uses: azure/login@v1
+      #   if: ${{ failure() }} || ${{ success() }}
+      #   with:
+      #     creds: ${{ secrets.AZURE_CREDENTIALS }}
+      #     enable-AzPSSession: true
       - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
         with:
@@ -41,17 +43,16 @@ jobs:
         if: ${{ success() }}
         run: terraform apply
         working-directory: azpolicy
-      - name: Clean Resources with PowerShell
-        id: destroy
-        uses: azure/powershell@v1
-        if: ${{ failure() }} || ${{ success() }}
-        with:
-          azPSVersion: "latest"
-          inlineScript: |
-            # Used by GitHub Workflows to clean deployed resources quicker than tf destroy
-            # Quicker during CD as remediation tasks must be in a terminal provisioning state (Succeeded, Canceled, Failed) before they can be deleted.
-
-            Get-AzPolicyAssignment -Scope "/providers/Microsoft.Management/managementgroups/jose" | Remove-AzPolicyAssignment -Verbose
-            Get-AzPolicySetDefinition -ManagementGroupName jose -Custom | Remove-AzPolicySetDefinition -Force -Verbose
-            Get-AzPolicyDefinition -ManagementGroupName jose -Custom | Remove-AzPolicyDefinition -Force -Verbose
-            Remove-AzPolicyExemption -Name "Subscription Diagnostic Settings Exemption" -Scope ("/subscriptions/" + (Get-AzContext).Subscription.Id) -Force -Verbose -ErrorAction SilentlyContinue
+      # - name: Clean Resources with PowerShell
+      #   id: destroy
+      #   uses: azure/powershell@v1
+      #   if: ${{ failure() }} || ${{ success() }}
+      #   with:
+      #     azPSVersion: "latest"
+      #     inlineScript: |
+      #       # Used by GitHub Workflows to clean deployed resources quicker than tf destroy
+      #       # Quicker during CD as remediation tasks must be in a terminal provisioning state (Succeeded, Canceled, Failed) before they can be deleted.
+      #       Get-AzPolicyAssignment -Scope "/providers/Microsoft.Management/managementgroups/jose" | Remove-AzPolicyAssignment -Verbose
+      #       Get-AzPolicySetDefinition -ManagementGroupName jose -Custom | Remove-AzPolicySetDefinition -Force -Verbose
+      #       Get-AzPolicyDefinition -ManagementGroupName jose -Custom | Remove-AzPolicyDefinition -Force -Verbose
+      #       Remove-AzPolicyExemption -Name "Subscription Diagnostic Settings Exemption" -Scope ("/subscriptions/" + (Get-AzContext).Subscription.Id) -Force -Verbose -ErrorAction SilentlyContinue
