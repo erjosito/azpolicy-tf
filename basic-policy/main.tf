@@ -40,8 +40,8 @@ resource "azurerm_policy_set_definition" "resource_location" {
   policy_definition_reference {
     policy_definition_id = azurerm_policy_definition.resource_location.id
     parameter_values = jsonencode({
-      allowedLocations = {
-        value = "[parameters('allowedLocations')]"
+      disallowedLocations = {
+        value = "[parameters('disallowedLocations')]"
       }
     })
   }
