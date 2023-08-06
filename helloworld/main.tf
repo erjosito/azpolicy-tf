@@ -12,13 +12,11 @@ terraform {
     storage_account_name = "erjositotfstate"
     container_name       = "helloworld"
     key                  = "helloworld.tfstate"
-    use_oidc             = true
   }
 }
 
 provider "azurerm" {
   features {}
-  use_oidc = true
 }
 
 # Define any Azure resources to be created here. A simple resource group is shown here as a minimal example.
