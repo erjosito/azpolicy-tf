@@ -1,7 +1,7 @@
-module "deny_resource_types" {
+module "dine_dns_zone_group" {
   source              = "..//modules/definition"
-  policy_name         = "deny_resource_types"
-  display_name        = "Deny Azure Resource types"
-  policy_category     = "General"
+  policy_name         = "dnszonegroup_dine"
+  display_name        = "Create DNS Zone Group for private endpoints"
+  policy_category     = "Private Link"
   management_group_id = data.azurerm_management_group.org.id
 }
