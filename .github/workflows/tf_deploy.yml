@@ -1,4 +1,4 @@
-name: 'Terraform'
+name: 'Deploy'
  
 on:
   workflow_dispatch:
@@ -17,6 +17,7 @@ jobs:
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      MG_NAME: "jose"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -50,8 +51,7 @@ jobs:
             # Used by GitHub Workflows to clean deployed resources quicker than tf destroy
             # Quicker during CD as remediation tasks must be in a terminal provisioning state (Succeeded, Canceled, Failed) before they can be deleted.
 
-            Get-AzPolicyAssignment -Scope "/providers/Microsoft.Management/managementgroups/team_a" | Remove-AzPolicyAssignment -Verbose
-            Get-AzPolicyAssignment -Scope "/providers/Microsoft.Management/managementgroups/policy_dev" | Remove-AzPolicyAssignment -Verbose
-            Get-AzPolicySetDefinition -ManagementGroupName "policy_dev" -Custom | Remove-AzPolicySetDefinition -Force -Verbose
-            Get-AzPolicyDefinition -ManagementGroupName "policy_dev" -Custom | Remove-AzPolicyDefinition -Force -Verbose
+            Get-AzPolicyAssignment -Scope "/providers/Microsoft.Management/managementgroups/$MG_NAME" | Remove-AzPolicyAssignment -Verbose
+            Get-AzPolicySetDefinition -ManagementGroupName "$MG_NAME" -Custom | Remove-AzPolicySetDefinition -Force -Verbose
+            Get-AzPolicyDefinition -ManagementGroupName "$MG_NAME" -Custom | Remove-AzPolicyDefinition -Force -Verbose
             Remove-AzPolicyExemption -Name "Subscription Diagnostic Settings Exemption" -Scope ("/subscriptions/" + (Get-AzContext).Subscription.Id) -Force -Verbose -ErrorAction SilentlyContinue
