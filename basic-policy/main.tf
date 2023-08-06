@@ -25,7 +25,7 @@ resource "azurerm_policy_definition" "resource_location" {
   policy_type           = "Custom"
   mode                  = "All"
   display_name          = "Disallowed resource Location"
-  management_group_name = var.definition_management_group
+  management_group_id   = var.definition_management_group
   policy_rule           = file("${path.module}/policy-rule.json")
   parameters            = file("${path.module}/policy-parameters.json")
 }
