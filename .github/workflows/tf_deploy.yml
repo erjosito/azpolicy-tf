@@ -20,6 +20,12 @@ jobs:
       MG_NAME: "jose"
     runs-on: ubuntu-latest
     steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        if: ${{ failure() }} || ${{ success() }}
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          enable-AzPSSession: true
       - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
         with:
@@ -35,12 +41,6 @@ jobs:
         if: ${{ success() }}
         run: terraform apply
         working-directory: azpolicy
-      - name: Azure Login
-        uses: azure/login@v1
-        if: ${{ failure() }} || ${{ success() }}
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-          enable-AzPSSession: true
       - name: Clean Resources with PowerShell
         id: destroy
         uses: azure/powershell@v1
