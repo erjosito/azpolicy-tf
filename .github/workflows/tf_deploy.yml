@@ -8,34 +8,50 @@ on:
   # pull_request:
  
 jobs:
-  terraform:
-    name: 'Terraform'
+  cd:
     env:
-      ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
-      ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
+      TF_IN_AUTOMATION: true
+      TF_INPUT: false
+      TF_CLI_ARGS_apply: "-auto-approve -parallelism=30"
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
     runs-on: ubuntu-latest
-    environment: production
- 
-    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./azpolicy
- 
     steps:
-    # Checkout the repository to the GitHub Actions runner
-    - name: Checkout
-      uses: actions/checkout@v3
-    # Setup Terraform CLI
-    - uses: hashicorp/setup-terraform@v2
-    # Definitions
-    - run: terraform init definitions.tf
-    - id: plan
-      run: terraform plan definitions.tf -no-color
-    - run: echo ${{ steps.plan.outputs.stdout }}
-    - run: echo ${{ steps.plan.outputs.stderr }}
-    - run: echo ${{ steps.plan.outputs.exitcode }}
-    - id: apply
-      run: terraform apply definitions.tf -auto-approve
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ~1.3.0
+
+      # Definitions
+      - name: Terraform Init
+        id: init
+        run: terraform init -no-color defintions.tf
+        working-directory: azpolicy
+      - name: Terraform Apply
+        id: apply
+        if: ${{ success() }}
+        run: terraform apply defintions.tf
+        working-directory: azpolicy
+      - name: Azure Login
+        uses: azure/login@v1
+        if: ${{ failure() }} || ${{ success() }}
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          enable-AzPSSession: true
+      - name: Clean Resources with PowerShell
+        id: destroy
+        uses: azure/powershell@v1
+        if: ${{ failure() }} || ${{ success() }}
+        with:
+          azPSVersion: "latest"
+          inlineScript: |
+            # Used by GitHub Workflows to clean deployed resources quicker than tf destroy
+            # Quicker during CD as remediation tasks must be in a terminal provisioning state (Succeeded, Canceled, Failed) before they can be deleted.
+
+            Get-AzPolicyAssignment -Scope "/providers/Microsoft.Management/managementgroups/team_a" | Remove-AzPolicyAssignment -Verbose
+            Get-AzPolicyAssignment -Scope "/providers/Microsoft.Management/managementgroups/policy_dev" | Remove-AzPolicyAssignment -Verbose
+            Get-AzPolicySetDefinition -ManagementGroupName "policy_dev" -Custom | Remove-AzPolicySetDefinition -Force -Verbose
+            Get-AzPolicyDefinition -ManagementGroupName "policy_dev" -Custom | Remove-AzPolicyDefinition -Force -Verbose
+            Remove-AzPolicyExemption -Name "Subscription Diagnostic Settings Exemption" -Scope ("/subscriptions/" + (Get-AzContext).Subscription.Id) -Force -Verbose -ErrorAction SilentlyContinue
