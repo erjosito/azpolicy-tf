@@ -13,10 +13,10 @@ jobs:
       TF_IN_AUTOMATION: true
       TF_INPUT: false
       TF_CLI_ARGS_apply: "-auto-approve -parallelism=30"
-      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      # ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      # ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      # ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      # ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
       MG_NAME: "jose"
     runs-on: ubuntu-latest
     steps:
@@ -28,12 +28,12 @@ jobs:
       # Definitions
       - name: Terraform Init
         id: init
-        run: terraform init -no-color defintions.tf
+        run: terraform init -no-color
         working-directory: azpolicy
       - name: Terraform Apply
         id: apply
         if: ${{ success() }}
-        run: terraform apply defintions.tf
+        run: terraform apply
         working-directory: azpolicy
       - name: Azure Login
         uses: azure/login@v1
