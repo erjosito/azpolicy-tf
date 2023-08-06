@@ -51,7 +51,7 @@ jobs:
             # Used by GitHub Workflows to clean deployed resources quicker than tf destroy
             # Quicker during CD as remediation tasks must be in a terminal provisioning state (Succeeded, Canceled, Failed) before they can be deleted.
 
-            Get-AzPolicyAssignment -Scope "/providers/Microsoft.Management/managementgroups/$MG_NAME" | Remove-AzPolicyAssignment -Verbose
-            Get-AzPolicySetDefinition -ManagementGroupName "$MG_NAME" -Custom | Remove-AzPolicySetDefinition -Force -Verbose
-            Get-AzPolicyDefinition -ManagementGroupName "$MG_NAME" -Custom | Remove-AzPolicyDefinition -Force -Verbose
+            Get-AzPolicyAssignment -Scope "/providers/Microsoft.Management/managementgroups/jose" | Remove-AzPolicyAssignment -Verbose
+            Get-AzPolicySetDefinition -ManagementGroupName jose -Custom | Remove-AzPolicySetDefinition -Force -Verbose
+            Get-AzPolicyDefinition -ManagementGroupName jose -Custom | Remove-AzPolicyDefinition -Force -Verbose
             Remove-AzPolicyExemption -Name "Subscription Diagnostic Settings Exemption" -Scope ("/subscriptions/" + (Get-AzContext).Subscription.Id) -Force -Verbose -ErrorAction SilentlyContinue
