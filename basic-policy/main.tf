@@ -35,7 +35,7 @@ resource "azurerm_policy_set_definition" "resource_location" {
   name                  = "resource-location"
   policy_type           = "Custom"
   display_name          = "Resource Location"
-  management_group_name = var.definition_management_group
+  management_group_id   = var.definition_management_group
   parameters = file("${path.module}/initiative-parameters.json")
   policy_definition_reference {
     policy_definition_id = azurerm_policy_definition.resource_location.id
