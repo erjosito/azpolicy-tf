@@ -1,0 +1,10 @@
+{
+    "disallowedLocations": {
+      "type": "Array",
+      "metadata": {
+        "description": "The list of disallowed locations for resources.",
+        "displayName": "Disallowed locations",
+        "strongType": "location"
+      }
+    }
+  }

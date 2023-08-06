@@ -1,0 +1,46 @@
+name: 'Deploy Basic Policy'
+ 
+on:
+  workflow_dispatch:
+ 
+jobs:
+  Deploy:
+    env:
+      TF_IN_AUTOMATION: true
+      TF_INPUT: false
+      TF_CLI_ARGS_apply: "-auto-approve -parallelism=30"
+      ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+      # Hello world
+      - name: Terraform Init
+        id: tf-init
+        run: terraform init -no-color
+        working-directory: basic-policy
+      - name: Terraform Format
+        run: terraform fmt -check
+      - name: Terraform Plan
+        id: tf-plan
+        working-directory: basic-policy
+        run: |
+          export exitcode=0
+          terraform plan -detailed-exitcode -no-color -out tfplan || export exitcode=$?
+          echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
+          if [ $exitcode -eq 1 ]; then
+            echo Terraform Plan Failed!
+            exit 1
+          else 
+            exit 0
+          fi
+      - name: Terraform Apply
+        id: tf-apply
+        if: ${{ success() }}
+        run: terraform apply
+        working-directory: basic-policy
