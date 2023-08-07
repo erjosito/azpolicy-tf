@@ -41,8 +41,8 @@ resource "azurerm_policy_set_definition" "zone_group" {
   dynamic policy_definition_reference {
     for_each = toset(var.endpoint_types)
     content {
-      policy_definition_id = azurerm_policy_definition.zone_group[each.value].id
-      parameter_values = "\"${each.value}PrivateDnsZoneId\": {\"value\": \"[parameters('${each.value}PrivateDnsZoneId')]\"}"
+      policy_definition_id = azurerm_policy_definition.zone_group[endpoint_types.value].id
+      parameter_values = "\"${endpoint_types.value}PrivateDnsZoneId\": {\"value\": \"[parameters('${endpoint_types.value}PrivateDnsZoneId')]\"}"
     }
   }
 }
