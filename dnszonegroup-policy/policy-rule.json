@@ -75,7 +75,7 @@
             },
             "parameters": {
               "_ENDPOINT_TYPE_PrivateDnsZoneId": {
-                "value": "[parameters('_ENDPOINY_TYPE_PrivateDnsZoneId')]"
+                "value": "[parameters('_ENDPOINT_TYPE_PrivateDnsZoneId')]"
               },
               "privateEndpointName": {
                 "value": "[field('name')]"
