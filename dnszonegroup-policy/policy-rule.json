@@ -65,7 +65,7 @@
                       {
                         "name": "storageBlob-privateDnsZone",
                         "properties": {
-                          "privateDnsZoneId": "[parameters('privateDnsZoneId')]"
+                          "privateDnsZoneId": "[parameters('_ENDPOINT_TYPE_PrivateDnsZoneId')]"
                         }
                       }
                     ]
