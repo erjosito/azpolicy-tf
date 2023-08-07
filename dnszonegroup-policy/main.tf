@@ -38,15 +38,17 @@ resource "azurerm_policy_set_definition" "zone_group" {
   display_name          = "Zone Group for endpoints"
   management_group_id   = var.definition_management_group
   parameters            = file("${path.module}/initiative-parameters.json")
-  [for endpoint_type in toset(var.endpoint_types) :
-  policy_definition_reference {
-    policy_definition_id = azurerm_policy_definition.zone_group[endpoint_type.value].id
-    parameter_values = jsonencode({
-      ${endpoint_type.value}PrivateDnsZoneId = {
-        value = "[parameters('${endpoint_type.value}PrivateDnsZoneId')]"
-      }
-    })
-  }]
+  dynamic policy_definition_reference {
+    for_each = toset(var.endpoint_types)
+    content {
+      policy_definition_id = azurerm_policy_definition.zone_group[each.value].id
+      parameter_values = jsonencode({
+        "${each.value}PrivateDnsZoneId" = {
+          value = "[parameters('${each.value}PrivateDnsZoneId')]"
+        }
+      })
+    }
+  }
 }
 
 # Assignment
