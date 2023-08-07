@@ -42,11 +42,7 @@ resource "azurerm_policy_set_definition" "zone_group" {
     for_each = toset(var.endpoint_types)
     content {
       policy_definition_id = azurerm_policy_definition.zone_group[each.value].id
-      parameter_values = jsonencode({
-        "${each.value}PrivateDnsZoneId" = {
-          value = "[parameters('${each.value}PrivateDnsZoneId')]"
-        }
-      })
+      parameter_values = "\"${each.value}PrivateDnsZoneId\": {\"value\": \"[parameters('${each.value}PrivateDnsZoneId')]\"}"
     }
   }
 }
