@@ -42,7 +42,7 @@ resource "azurerm_policy_set_definition" "zone_group" {
     for_each = toset(var.endpoint_types)
     content {
       policy_definition_id = azurerm_policy_definition.zone_group[policy_definition_reference.value].id
-      parameter_values = "\"${policy_definition_reference.value}PrivateDnsZoneId\": {\"value\": \"[parameters('${policy_definition_reference.value}PrivateDnsZoneId')]\"}"
+      parameter_values = "{\"${policy_definition_reference.value}PrivateDnsZoneId\": {\"value\": \"[parameters('${policy_definition_reference.value}PrivateDnsZoneId')]\"}}"
     }
   }
 }
