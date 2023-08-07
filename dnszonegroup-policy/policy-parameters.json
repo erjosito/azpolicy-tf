@@ -6,13 +6,5 @@
       "description": null,
       "strongType": "Microsoft.Network/privateDnsZones"
     }
-  },
-  "endpointGroupId": {
-    "type": "String",
-    "metadata": {
-      "displayName": "Endpoint Group ID (blob, etc.)",
-      "description": "Group ID of the endpoints that will trigger the policy (blob, etc.)"
-    }
   }
-
 }
