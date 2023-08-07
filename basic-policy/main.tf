@@ -50,7 +50,7 @@ resource "azurerm_policy_set_definition" "resource_location" {
 # Assignment
 resource "azurerm_management_group_policy_assignment" "resource_location" {
   name                 = "Audit resources in West Europe"
-  scope                = var.definition_management_group
+  management_group_id  = var.definition_management_group
   policy_definition_id = azurerm_policy_set_definition.resource_location.id
   description          = "Audit resources in West Europe"
   display_name         = "Audit resources in West Europe"
