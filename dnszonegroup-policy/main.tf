@@ -21,32 +21,33 @@ provider "azurerm" {
 
 # Custom Azure Policy
 resource "azurerm_policy_definition" "zone_group" {
-  for_each  = toset(var.endpoint_types)
+  for_each              = toset(var.endpoint_types)
   name                  = "${each.value}-zone-group"
   policy_type           = "Custom"
   mode                  = "All"
-  display_name          = "Connect endpoints to DNS private zones"
+  display_name          = "Connect ${each.value} endpoints to DNS private zones"
   management_group_id   = var.definition_management_group
-  policy_rule           = replace(file("${path.module}/policy-rule.json"), "ENDPOINT_TYPE", each.value)
-  parameters            = file("${path.module}/policy-parameters.json")
+  policy_rule           = replace(file("${path.module}/policy-rule.json"), "_ENDPOINT_TYPE_", each.value)
+  parameters            = replace(file("${path.module}/policy-parameters.json"), "_ENDPOINT_TYPE_", each.value)
 }
 
 # Policy set (aka initiative)
-# resource "azurerm_policy_set_definition" "zone_group" {
-#   name                  = "zone-group"
-#   policy_type           = "Custom"
-#   display_name          = "Zone Group for endpoints"
-#   management_group_id   = var.definition_management_group
-#   parameters            = file("${path.module}/initiative-parameters.json")
-#   policy_definition_reference {
-#     policy_definition_id = azurerm_policy_definition.zone_group[*].id
-#     parameter_values = jsonencode({
-#       disallowedLocations = {
-#         value = "[parameters('disallowedLocations')]"
-#       }
-#     })
-#   }
-# }
+resource "azurerm_policy_set_definition" "zone_group" {
+  name                  = "zone-group"
+  policy_type           = "Custom"
+  display_name          = "Zone Group for endpoints"
+  management_group_id   = var.definition_management_group
+  parameters            = file("${path.module}/initiative-parameters.json")
+  [for endpoint_type in toset(var.endpoint_types) :
+  policy_definition_reference {
+    policy_definition_id = azurerm_policy_definition.zone_group[endpoint_type.value].id
+    parameter_values = jsonencode({
+      ${endpoint_type.value}PrivateDnsZoneId = {
+        value = "[parameters('${endpoint_type.value}PrivateDnsZoneId')]"
+      }
+    })
+  }]
+}
 
 # Assignment
 # resource "azurerm_management_group_policy_assignment" "zone_group" {

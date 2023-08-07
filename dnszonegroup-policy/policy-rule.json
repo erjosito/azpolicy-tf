@@ -22,7 +22,7 @@
             "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].groupIds[*]",
             "where": {
               "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].groupIds[*]",
-              "equals": "ENDPOINT_TYPE"
+              "equals": "_ENDPOINT_TYPE_"
             }
           },
           "greaterOrEquals": 1
@@ -44,7 +44,7 @@
               "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
               "contentVersion": "1.0.0.0",
               "parameters": {
-                "privateDnsZoneId": {
+                "_ENDPOINT_TYPE_PrivateDnsZoneId": {
                   "type": "string"
                 },
                 "privateEndpointName": {

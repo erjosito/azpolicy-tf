@@ -1,5 +1,5 @@
 {
-  "privateDnsZoneId": {
+  "_ENDPOINT_TYPE_PrivateDnsZoneId": {
     "type": "String",
     "metadata": {
       "displayName": "Private DNS Zone ID",
