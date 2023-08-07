@@ -32,21 +32,21 @@ resource "azurerm_policy_definition" "zone_group" {
 }
 
 # Policy set (aka initiative)
-resource "azurerm_policy_set_definition" "zone_group" {
-  name                  = "zone-group"
-  policy_type           = "Custom"
-  display_name          = "Zone Group for endpoints"
-  management_group_id   = var.definition_management_group
-  parameters            = file("${path.module}/initiative-parameters.json")
-  policy_definition_reference {
-    policy_definition_id = azurerm_policy_definition.zone_group[*].id
-    parameter_values = jsonencode({
-      disallowedLocations = {
-        value = "[parameters('disallowedLocations')]"
-      }
-    })
-  }
-}
+# resource "azurerm_policy_set_definition" "zone_group" {
+#   name                  = "zone-group"
+#   policy_type           = "Custom"
+#   display_name          = "Zone Group for endpoints"
+#   management_group_id   = var.definition_management_group
+#   parameters            = file("${path.module}/initiative-parameters.json")
+#   policy_definition_reference {
+#     policy_definition_id = azurerm_policy_definition.zone_group[*].id
+#     parameter_values = jsonencode({
+#       disallowedLocations = {
+#         value = "[parameters('disallowedLocations')]"
+#       }
+#     })
+#   }
+# }
 
 # Assignment
 # resource "azurerm_management_group_policy_assignment" "zone_group" {
