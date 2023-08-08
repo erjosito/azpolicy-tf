@@ -71,7 +71,7 @@ resource "azurerm_management_group_policy_assignment" "zone_group_assignment" {
 resource "azurerm_role_assignment" "dine-pol-rbac-asi" {
   for_each = var.policyMsiRbacRoleNames
   principal_id                     = zone_group_assignment.dine-pol-asi.identity[0].principal_id
-  scope                            = definition_management_group
+  scope                            = var.definition_management_group
   role_definition_name             = each.value
   skip_service_principal_aad_check = true
 }
