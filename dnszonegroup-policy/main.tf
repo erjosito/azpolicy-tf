@@ -21,7 +21,7 @@ provider "azurerm" {
 
 # Private DNS zones
 resource "azurerm_private_dns_zone" "example" {
-  for_each = toset(var.zone_assignments)
+  for_each = toset(values(var.zone_assignments))
   name     = each.value
   resource_group_name = var.zone_rg_name
 }
