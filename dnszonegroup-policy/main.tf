@@ -69,7 +69,7 @@ resource "azurerm_management_group_policy_assignment" "zone_group" {
 
 # Role assignment for the DINE policy
 resource "azurerm_role_assignment" "dine-pol-rbac-asi" {
-  for_each = var.policyMsiRbacRoleNames
+  for_each = var.assignment_msi_roles
   principal_id                     = azurerm_management_group_policy_assignment.zone_group.identity[0].principal_id
   scope                            = var.definition_management_group
   role_definition_name             = each.value
