@@ -37,7 +37,7 @@ resource "azurerm_policy_set_definition" "zone_group" {
   policy_type           = "Custom"
   display_name          = "Zone Group for endpoints"
   management_group_id   = var.definition_management_group
-  parameters            = jsondecode({for s in var.endpoint_types : "${s}PrivateDnsZoneId" => jsonencode(replace(var.initiative_param_template, "_ENDPOINT_TYPE_", s))})
+  parameters            = jsonencode({for s in var.endpoint_types : "${s}PrivateDnsZoneId" => jsondecode(var.initiative_param_template)})
   dynamic policy_definition_reference {
     for_each = toset(var.endpoint_types)
     content {
