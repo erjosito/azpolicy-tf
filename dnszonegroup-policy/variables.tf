@@ -17,11 +17,6 @@ variable "zone_rg_name" {
   description = "Name of the private DNS zone resource group"
   default     = "zone-rg"
 }
-variable "zone_id_prefix" {
-  type        = string
-  description = "Prefix for the private DNS zone ID, including subscription ID and resource group name"
-  default     = "/subscriptions/${var.zone_subscription_id}/resourceGroups/${var.zone_rg_name}/providers/Microsoft.Network/privateDnsZones/"
-}
 variable "zone_assignments" {
   type        = map(string)
   description = "Map of endpoint types to private DNS zone IDs"

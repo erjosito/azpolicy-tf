@@ -19,7 +19,7 @@ provider "azurerm" {
   features {}
 }
 
-# Creating the DNS private zones
+# Private DNS zones
 resource "azurerm_private_dns_zone" "example" {
   for_each = toset(var.zone_assignments)
   name     = each.value
@@ -61,5 +61,5 @@ resource "azurerm_management_group_policy_assignment" "zone_group" {
   policy_definition_id = azurerm_policy_set_definition.zone_group.id
   description          = "Link automatically private endpoints to DNS private zones"
   display_name         = "Link automatically private endpoints to DNS private zones"
-  parameters           = jsonencode({for k, v in var.zone_assignments : "${k}PrivateDnsZoneId" => jsondecode("{ \"value\": \"${v}\" }")})
+  parameters           = jsonencode({for k, v in var.zone_assignments : "${k}PrivateDnsZoneId" => jsondecode("{ \"value\": \"/subscriptions/${var.zone_subscription_id}/resourceGroups/${var.zone_rg_name}/providers/Microsoft.Network/privateDnsZones/${v}\" }")})
 }
