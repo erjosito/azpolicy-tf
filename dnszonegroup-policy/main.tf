@@ -19,6 +19,13 @@ provider "azurerm" {
   features {}
 }
 
+# Creating the DNS private zones
+resource "azurerm_private_dns_zone" "example" {
+  for_each = toset(var.zone_assignments)
+  name     = each.value
+  resource_group_name = var.zone_rg_name
+}
+
 # Custom Azure Policy
 resource "azurerm_policy_definition" "zone_group" {
   for_each              = toset(var.endpoint_types)
@@ -48,11 +55,11 @@ resource "azurerm_policy_set_definition" "zone_group" {
 }
 
 # Assignment
-# resource "azurerm_management_group_policy_assignment" "zone_group" {
-#   name                 = "Resources in WestEurope"      # Max 24 characters
-#   management_group_id  = var.definition_management_group
-#   policy_definition_id = azurerm_policy_set_definition.zone_group.id
-#   description          = "Audit resources in West Europe"
-#   display_name         = "Audit resources in West Europe"
-#   parameters           = file("${path.module}/assignment-parameters.json")
-# }
+resource "azurerm_management_group_policy_assignment" "zone_group" {
+  name                 = "PLink and DNS"      # Max 24 characters
+  management_group_id  = var.definition_management_group
+  policy_definition_id = azurerm_policy_set_definition.zone_group.id
+  description          = "Link automatically private endpoints to DNS private zones"
+  display_name         = "Link automatically private endpoints to DNS private zones"
+  parameters           = jsonencode({for k, v in var.zone_assignments : "${k}PrivateDnsZoneId" => jsondecode("{ \"value\": \"${v}\" }")})
+}
