@@ -11,6 +11,7 @@ variable "initiative_param_template" {
   type = string
   description = "JSON Template for creating initiative parameters"
   default = <<PARAM_TEMPLATE
+  {
     "type": "String",
     "metadata": {
         "displayName": "Private DNS Zone ID",
