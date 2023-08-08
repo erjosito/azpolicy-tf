@@ -3,7 +3,7 @@
     "type": "String",
     "metadata": {
       "displayName": "Private DNS Zone ID",
-      "description": null,
+      "description": "Private DNS Zone ID",
       "strongType": "Microsoft.Network/privateDnsZones"
     }
   }

@@ -1,10 +1,10 @@
 {
-    "disallowedLocations": {
-        "type": "Array",
+    "_ENDPOINT_TYPE_PrivateDnsZoneId": {
+        "type": "String",
         "metadata": {
-            "description": "The list of disallowed locations for resources",
-            "displayName": "Disallowed locations",
-            "strongType": "location"
+            "displayName": "Private DNS Zone ID",
+            "description": "Private DNS Zone ID",
+            "strongType": "Microsoft.Network/privateDnsZones"
         }
     }
 }
