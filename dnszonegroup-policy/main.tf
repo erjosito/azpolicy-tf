@@ -24,6 +24,7 @@ resource "azurerm_private_dns_zone" "example" {
   for_each = toset(values(var.zone_assignments))
   name     = each.value
   resource_group_name = var.zone_rg_name
+
 }
 
 # Custom Azure Policy
@@ -57,6 +58,7 @@ resource "azurerm_policy_set_definition" "zone_group" {
 # Assignment
 resource "azurerm_management_group_policy_assignment" "zone_group" {
   name                 = "PLink and DNS"      # Max 24 characters
+  location             = var.assignment_location
   management_group_id  = var.definition_management_group
   policy_definition_id = azurerm_policy_set_definition.zone_group.id
   description          = "Link automatically private endpoints to DNS private zones"

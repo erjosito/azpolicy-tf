@@ -46,3 +46,8 @@ variable "assignment_msi_roles" {
   description = "Azure RBAC Role Names required for DINE policy MSI. Can specify multiple RBAC roles as a set."
   default     = [ "Network Contributor" ]
 }
+variable "assignment_location" {
+  type        = string
+  description = "A location is required when specifying the identity for DINE."
+  default     = "eastus2"
+}
