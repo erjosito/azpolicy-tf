@@ -55,11 +55,23 @@ resource "azurerm_policy_set_definition" "zone_group" {
 }
 
 # Assignment
-resource "azurerm_management_group_policy_assignment" "zone_group" {
+resource "azurerm_management_group_policy_assignment" "zone_group_assignment" {
   name                 = "PLink and DNS"      # Max 24 characters
   management_group_id  = var.definition_management_group
   policy_definition_id = azurerm_policy_set_definition.zone_group.id
   description          = "Link automatically private endpoints to DNS private zones"
   display_name         = "Link automatically private endpoints to DNS private zones"
   parameters           = jsonencode({for k, v in var.zone_assignments : "${k}PrivateDnsZoneId" => jsondecode("{ \"value\": \"/subscriptions/${var.zone_subscription_id}/resourceGroups/${var.zone_rg_name}/providers/Microsoft.Network/privateDnsZones/${v}\" }")})
+  identity {
+    type = "SystemAssigned"
+  }
+}
+
+# Role assignment for the DINE policy
+resource "azurerm_role_assignment" "dine-pol-rbac-asi" {
+  for_each = var.policyMsiRbacRoleNames
+  principal_id                     = zone_group_assignment.dine-pol-asi.identity[0].principal_id
+  scope                            = definition_management_group
+  role_definition_name             = each.value
+  skip_service_principal_aad_check = true
 }

@@ -41,3 +41,8 @@ variable "initiative_param_template" {
   }
 PARAM_TEMPLATE
 }
+variable "assignment_msi_roles" {
+  type        = set(string)
+  description = "Azure RBAC Role Names required for DINE policy MSI. Can specify multiple RBAC roles as a set."
+  default     = [ "Network Contributor" ]
+}
