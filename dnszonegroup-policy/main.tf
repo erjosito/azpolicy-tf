@@ -55,7 +55,7 @@ resource "azurerm_policy_set_definition" "zone_group" {
 }
 
 # Assignment
-resource "azurerm_management_group_policy_assignment" "zone_group_assignment" {
+resource "azurerm_management_group_policy_assignment" "zone_group" {
   name                 = "PLink and DNS"      # Max 24 characters
   management_group_id  = var.definition_management_group
   policy_definition_id = azurerm_policy_set_definition.zone_group.id
@@ -70,7 +70,7 @@ resource "azurerm_management_group_policy_assignment" "zone_group_assignment" {
 # Role assignment for the DINE policy
 resource "azurerm_role_assignment" "dine-pol-rbac-asi" {
   for_each = var.policyMsiRbacRoleNames
-  principal_id                     = zone_group_assignment.dine-pol-asi.identity[0].principal_id
+  principal_id                     = azurerm_management_group_policy_assignment.zone_group.identity[0].principal_id
   scope                            = var.definition_management_group
   role_definition_name             = each.value
   skip_service_principal_aad_check = true
