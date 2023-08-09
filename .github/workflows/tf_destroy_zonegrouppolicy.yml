@@ -1,10 +1,10 @@
-name: 'Deploy DNS Zone Group Policy'
+name: 'Destroy DNS Zone Group Policy'
  
 on:
   workflow_dispatch:
  
 jobs:
-  Deploy:
+  Destroy:
     env:
       TF_IN_AUTOMATION: true
       TF_INPUT: false
@@ -24,23 +24,8 @@ jobs:
         id: tf-init
         run: terraform init -no-color
         working-directory: dnszonegroup-policy
-      - name: Terraform Format
-        run: terraform fmt -check
-      - name: Terraform Plan
-        id: tf-plan
-        working-directory: dnszonegroup-policy
-        run: |
-          export exitcode=0
-          terraform plan -detailed-exitcode -no-color -out tfplan || export exitcode=$?
-          echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
-          if [ $exitcode -eq 1 ]; then
-            echo Terraform Plan Failed!
-            exit 1
-          else 
-            exit 0
-          fi
-      - name: Terraform Apply
+      - name: Terraform Destroy
         id: tf-apply
         if: ${{ success() }}
-        run: terraform apply
+        run: terraform destroy
         working-directory: dnszonegroup-policy
