@@ -5,14 +5,6 @@ terraform {
       version = ">= 3.7.0"
     }
   }
-
-  # Update this block with the location of your terraform state file
-  backend "azurerm" {
-    resource_group_name  = "erjositotfstate"
-    storage_account_name = "erjositotfstate"
-    container_name       = "dnszonegrouppolicy"
-    key                  = "dnszonegrouppolicy.tfstate"
-  }
 }
 
 provider "azurerm" {
@@ -27,7 +19,6 @@ resource "azurerm_private_dns_zone" "example" {
   for_each = toset(values(var.zone_assignments))
   name     = each.value
   resource_group_name = var.zone_rg_name
-
 }
 
 # Custom Azure Policy
@@ -48,9 +39,9 @@ resource "azurerm_policy_set_definition" "zone_group" {
   policy_type           = "Custom"
   display_name          = "Zone Group for endpoints"
   management_group_id   = var.definition_management_group
-  parameters            = jsonencode({for s in var.endpoint_types : "${s}PrivateDnsZoneId" => jsondecode(var.initiative_param_template)})
+  parameters            = jsonencode({for s in keys(var.zone_assignments) : "${s}PrivateDnsZoneId" => jsondecode(var.initiative_param_template)})
   dynamic policy_definition_reference {
-    for_each = toset(var.endpoint_types)
+    for_each = toset(keys(var.zone_assignments))
     content {
       policy_definition_id = azurerm_policy_definition.zone_group[policy_definition_reference.value].id
       parameter_values = "{\"${policy_definition_reference.value}PrivateDnsZoneId\": {\"value\": \"[parameters('${policy_definition_reference.value}PrivateDnsZoneId')]\"}}"

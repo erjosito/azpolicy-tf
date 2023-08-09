@@ -1,0 +1,10 @@
+{
+  "_ENDPOINT_TYPE_PrivateDnsZoneId": {
+    "type": "String",
+    "metadata": {
+      "displayName": "Private DNS Zone ID",
+      "description": "Private DNS Zone ID",
+      "strongType": "Microsoft.Network/privateDnsZones"
+    }
+  }
+}
