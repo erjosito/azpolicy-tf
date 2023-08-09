@@ -19,6 +19,9 @@ provider "azurerm" {
   features {}
 }
 
+data "azurerm_subscription" "primary" {
+}
+
 # Private DNS zones
 resource "azurerm_private_dns_zone" "example" {
   for_each = toset(values(var.zone_assignments))
@@ -29,7 +32,8 @@ resource "azurerm_private_dns_zone" "example" {
 
 # Custom Azure Policy
 resource "azurerm_policy_definition" "zone_group" {
-  for_each              = toset(var.endpoint_types)
+  # for_each              = toset(var.endpoint_types)
+  for_each              = toset(keys(var.zone_assignments))
   name                  = "${each.value}-zone-group"
   policy_type           = "Custom"
   mode                  = "All"
@@ -63,14 +67,14 @@ resource "azurerm_management_group_policy_assignment" "zone_group" {
   policy_definition_id = azurerm_policy_set_definition.zone_group.id
   description          = "Link automatically private endpoints to DNS private zones"
   display_name         = "Link automatically private endpoints to DNS private zones"
-  parameters           = jsonencode({for k, v in var.zone_assignments : "${k}PrivateDnsZoneId" => jsondecode("{ \"value\": \"/subscriptions/${var.zone_subscription_id}/resourceGroups/${var.zone_rg_name}/providers/Microsoft.Network/privateDnsZones/${v}\" }")})
+  parameters           = jsonencode({for k, v in var.zone_assignments : "${k}PrivateDnsZoneId" => jsondecode("{ \"value\": \"/subscriptions/${data.azurerm_subscription.primary.id}/resourceGroups/${var.zone_rg_name}/providers/Microsoft.Network/privateDnsZones/${v}\" }")})
   identity {
     type = "SystemAssigned"
   }
 }
 
 # Role assignment for the DINE policy
-resource "azurerm_role_assignment" "dine-pol-rbac-asi" {
+resource "azurerm_role_assignment" "dine-policy" {
   for_each = var.assignment_msi_roles
   principal_id                     = azurerm_management_group_policy_assignment.zone_group.identity[0].principal_id
   scope                            = var.definition_management_group
