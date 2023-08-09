@@ -42,5 +42,4 @@ module "dns-zone-group" {
 
 ## Output reference
 
-- `policyAsignmentOutput`: output for the policy assignment.
-
+- `policyAsignmentOutput`: output for the policy assignment operation.
