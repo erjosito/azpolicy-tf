@@ -27,5 +27,5 @@ jobs:
       - name: Terraform Destroy
         id: tf-apply
         if: ${{ success() }}
-        run: terraform destroy
+        run: terraform destroy -auto-approved
         working-directory: dnszonegroup-policy
