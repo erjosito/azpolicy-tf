@@ -1,10 +1,4 @@
 terraform {
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = ">= 3.7.0"
-    }
-  }
   # Update this block with the location of your terraform state file
   backend "azurerm" {
     resource_group_name  = "erjositotfstate"
@@ -18,8 +12,8 @@ provider "azurerm" {
   features {}
 }
 
-
 module "dns-zone-group" {
+# See https://learn.microsoft.com/azure/private-link/private-endpoint-dns#azure-services-dns-zone-configuration
   source = "./modules/dns-zone-group"
   definition_management_group = "/providers/Microsoft.Management/managementGroups/mymgmtgroup"
   assignment_location = "eastus2"
