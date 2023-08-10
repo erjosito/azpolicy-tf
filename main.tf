@@ -13,14 +13,14 @@ provider "azurerm" {
 }
 
 module "dns-zone-group" {
-# See https://learn.microsoft.com/azure/private-link/private-endpoint-dns#azure-services-dns-zone-configuration
+  # See https://learn.microsoft.com/azure/private-link/private-endpoint-dns#azure-services-dns-zone-configuration
   source = "./modules/dns-zone-group"
   definition_management_group = "/providers/Microsoft.Management/managementGroups/mymgmtgroup"
-  assignment_location = "eastus2"
-  zone_rg_name = "dns"
+  assignment_location         = "eastus2"
+  zone_rg_name                = "dns"
   zone_assignments = {
-    "blob" = "privatelink.blob.core.windows.net"
-    "file" = "privatelink.file.core.windows.net"
+    "blob"  = "privatelink.blob.core.windows.net"
+    "file"  = "privatelink.file.core.windows.net"
     "table" = "privatelink.table.core.windows.net"
     "queue" = "privatelink.queue.core.windows.net"
   }

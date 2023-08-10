@@ -25,7 +25,7 @@ jobs:
         run: terraform init -no-color
         working-directory: ./
       - name: Terraform Format
-        run: terraform fmt -check
+        run: terraform fmt -check -diff
       - name: Terraform Plan
         id: tf-plan
         working-directory: ./
