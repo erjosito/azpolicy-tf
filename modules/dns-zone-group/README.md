@@ -16,6 +16,11 @@ The module will iterate over this variable and do the following:
 - Group the individual definitions in a single policy set (aka initiative)
 - Create the assignment for the policy set, and supply the DNS zone names as parameters.
 
+## Issues
+
+- Some private endpoints require connecting to multiple private zones, such as App services `sites`, who need to connect to `privatelink.azurewebsites.net` and `scm.privatelink.azurewebsites.net`. Fixing this would require changing the structure of the `zone-assignments` variable.
+- Some private endpoints require connecting to a private zone whose name is not predictable, either because is random or because it includes the region name.
+
 ## Sample usage
 
 ```terraform

@@ -19,9 +19,14 @@ module "dns-zone-group" {
   assignment_location         = "eastus2"
   zone_rg_name                = "dns"
   zone_assignments = {
-    "blob"  = "privatelink.blob.core.windows.net"
-    "file"  = "privatelink.file.core.windows.net"
-    "table" = "privatelink.table.core.windows.net"
-    "queue" = "privatelink.queue.core.windows.net"
+    "blob"      = "privatelink.blob.core.windows.net"
+    "file"      = "privatelink.file.core.windows.net"
+    "table"     = "privatelink.table.core.windows.net"
+    "queue"     = "privatelink.queue.core.windows.net"
+    "dfs"       = "privatelink.dfs.core.windows.net"
+    "web"       = "privatelink.web.core.windows.net"
+    "sqlServer" = "privatelink.database.windows.net"
+    "registry"  = "privatelink.azurecr.io"
+    "sites"     = "privatelink.azurewebsites.net"
   }
 }
