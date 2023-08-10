@@ -5,7 +5,7 @@ variable "definition_management_group" {
 variable "zone_rg_name" {
   type        = string
   description = "Name of the private DNS zone resource group"
-  default     = "zone-rg"
+  default     = "private-dns-zone-rg"
 }
 variable "zone_assignments" {
   type        = map(string)
@@ -16,20 +16,6 @@ variable "zone_assignments" {
     "table" = "privatelink.table.core.windows.net"
     "queue" = "privatelink.queue.core.windows.net"
   }
-}
-variable "initiative_param_template" {
-  type = string
-  description = "JSON Template for creating initiative parameters"
-  default = <<PARAM_TEMPLATE
-  {
-    "type": "String",
-    "metadata": {
-        "displayName": "Private DNS Zone ID",
-        "description": "Private DNS Zone ID",
-        "strongType": "Microsoft.Network/privateDnsZones"
-    }
-  }
-PARAM_TEMPLATE
 }
 variable "assignment_msi_roles" {
   type        = set(string)
