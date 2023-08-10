@@ -10,10 +10,8 @@ terraform {
 data "azurerm_subscription" "primary" {
 }
 
-local "initiative_param_template" {
-  type = string
-  description = "JSON Template for creating initiative parameters"
-  default = <<PARAM_TEMPLATE
+locals {
+  initiative_param_template = <<PARAM_TEMPLATE
   {
     "type": "String",
     "metadata": {
