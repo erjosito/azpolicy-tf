@@ -18,7 +18,6 @@ The code consists of a Terraform module that, among other parameters, takes as i
     "dfs"       = "privatelink.dfs.core.windows.net"
     "web"       = "privatelink.web.core.windows.net"
     "sqlServer" = "privatelink.database.windows.net"
-    "registry"  = "privatelink.azurecr.io"
     "sites"     = "privatelink.azurewebsites.net"
 ```
 
@@ -26,11 +25,10 @@ The module will loop over every of the dictionary records and create the private
 
 Note that this approach might not be valid for certain specific types of private endpoints:
 
-- In some situations, the Azure service needs to control the private DNS zone and doesn't support Bring-Your-Own-Zone
-- In others, the private DNS zone cannot be specified in advance because it contains random characters
-- In other cases, the DNS zone contains the resource region name, so the policy must be region-specific and match the resource region too (or extract the region of the resource and create a region-specific DNS zone)
+- In some situations, the Azure service needs to control the private DNS zone and doesn't support Bring-Your-Own-Zone, for example Azure Kubernetes Service.
+- In other cases, the DNS zone contains the resource region name, so the policy must be region-specific and match the resource region too (or extract the region of the resource and create a region-specific DNS zone), such as Azure Batch or Azure Container Registry.
 
-And yet, this approach will cover for the vast majority of Azure Private Endpoint types, thus significantly reducing your Terraform code. 
+And yet, this approach will cover for the vast majority of Azure Private Endpoint types, thus significantly reducing your Terraform code.
 
 ## Terraform loops
 
