@@ -30,6 +30,8 @@ Note that this approach might not be valid for certain specific types of private
 
 And yet, this approach will cover for the vast majority of Azure Private Endpoint types, thus significantly reducing your Terraform code.
 
+> NOTE: [Issue #1](https://github.com/erjosito/azpolicy-tf/issues/1) suggests an improvement for this Terraform module to support region-specific private link.
+
 ## Terraform loops
 
 The module uses different Terraform techniques, most notably three types of loops:
